@@ -1,9 +1,12 @@
+# Based on official Dockerfile: https://github.com/dovecot/docker
 FROM alpine:3
 
 LABEL org.opencontainers.image.authors="markus@birth-online.de"
 
 ENV container=docker \
     LC_ALL=C
+
+ARG username=vmail
 
 RUN apk add --no-cache \
   tini \
@@ -21,9 +24,9 @@ RUN apk add --no-cache \
   mkdir /conf && \
   echo "!include_try /conf/*.conf" >> /etc/dovecot/dovecot.conf && \
   mkdir /data && \
-  addgroup -g 1000 vmail && \
-  adduser -h /data -u 1000 -D -G vmail vmail && \
-  chown vmail:vmail /data
+  addgroup -g 1000 $username && \
+  adduser -h /data -u 1000 -D -G $username $username && \
+  chown 1000:1000 /data
 
 COPY local.conf /conf/local.conf
 
