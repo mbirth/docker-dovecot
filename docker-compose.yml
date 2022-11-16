@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  dovecot:
+    image: mbirth/dovecot:latest
+    restart: unless-stopped
+    volumes:
+      - /opt/docker/dovecot/conf:/conf
+      - /opt/docker/dovecot/data:/data
+    ports:
+      - 10143:143

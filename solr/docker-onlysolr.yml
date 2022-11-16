@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  solr:
+    image: solr:latest
+    restart: unless-stopped
+    environment:
+      LANG: C.UTF-8
+      SOLR_SSL_ENABLED: "false"
+    volumes:
+      - /opt/docker/solr/var-solr:/var/solr
+      - /opt/docker/solr:/setupdata
+    ports:
+      - 8983:8983/tcp

@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  dovecot:
+    image: mbirth/dovecot:latest
+    restart: unless-stopped
+    volumes:
+      - /opt/docker/dovecot/conf:/conf
+      - /opt/docker/dovecot/data:/data
+    #ports:
+    #  - 10143:143
+    networks:
+      - traefik-public
+    labels:
+      # Create TCP endpoint in Traefik called "imaps" on port 993
+      # Traefik will do the TLS part and forward it plaintext to 143 here
+      traefik.enable: "true"
+      traefik.tcp.routers.dovecot.entrypoints: imaps
+      traefik.tcp.routers.dovecot.rule: HostSNI(`*`)
+      traefik.tcp.routers.dovecot.tls: true
+      traefik.tcp.routers.dovecot.tls.passthrough: false
+      traefik.tcp.routers.dovecot.tls.certresolver: le
+      traefik.tcp.routers.dovecot.tls.domains.main: "mailserver.domain.com"
+      traefik.tcp.services.dovecot.loadbalancer.server.port: "143"
+
+networks:
+  traefik-public:
+    external: true

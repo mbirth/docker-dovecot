@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  dovecot:
+    image: mbirth/dovecot:latest
+    restart: unless-stopped
+    volumes:
+      - /opt/docker/dovecot/conf:/conf
+      - /opt/docker/dovecot/data:/data
+    ports:
+      - 10143:143
+    links:
+      - solr
+    depends_on:
+      - solr
+
+  solr:
+    image: solr:latest
+    restart: unless-stopped
+    environment:
+      LANG: C.UTF-8
+      SOLR_SSL_ENABLED: "false"
+    volumes:
+      - /opt/docker/dovecot/solr/var-solr:/var/solr
+      - /opt/docker/dovecot/solr:/setupdata
+    ports:
+      - 8983:8983
